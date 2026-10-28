@@ -32,6 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# generated asset manifests
+/src/generated/
+/public/wallpapers.json
+/public/music.json
+/public/music/covers/
 
 # vercel
 .vercel

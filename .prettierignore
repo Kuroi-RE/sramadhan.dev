@@ -1,0 +1,8 @@
+.next
+node_modules
+public/music/covers
+dist
+coverage
+playwright-report
+test-results
+package-lock.json

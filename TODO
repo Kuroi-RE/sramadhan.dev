@@ -1,0 +1,26 @@
+---- BUG ----
+[DONE] 1. ketika drag aplikasi, aplikasi tersebut akan ke atas seperti terkena magnet. Analisis masalah dan fix
+  - Status: SOLVED (Claimed & Resolved by Antigravity)
+  - Root Cause: Di WindowManager.tsx, setiap WindowFrame dibungkus oleh elemen <div className="pointer-events-auto"> tanpa dimensi/posisi eksplisit. Karena child-nya (Rnd) adalah position: absolute, wrapper div tersebut memiliki offsetHeight = 0. Komponen react-rnd dengan bounds="parent" membaca tinggi parent (0px) lalu menghitung bounds.bottom = boundary.offsetHeight - window.height yang bernilai negatif (misal -480px). Akibatnya, react-draggable langsung membatasi (clamp) posisi y ke batas atas (y = 0) seketika saat event onDragStart terpicu, membuat window seolah ditarik magnet ke atas.
+  - Fix: Menghapus wrapper tak berdimensi tersebut di WindowManager.tsx dan meletakkan pointer-events-auto langsung pada elemen Rnd di WindowFrame.tsx, sehingga parent langsung dari react-rnd adalah container workspace yang berdimensi penuh.
+  - Verification: Terverifikasi lewat Playwright E2E test tests/e2e/drag-window.spec.ts di mana jendela bergerak mulus mengikuti kursor mouse tanpa tertarik ke atas.
+
+[DONE] 2. Kontrol aplikasi tidak fixed, ketika sebuah aplikasi dibuka dan terscroll maka controll aplikasi (close, minimize) hilang
+  - Status: SOLVED (Claimed & Resolved by Antigravity)
+  - Root Cause: Library re-resizable pada react-rnd menyuntikkan inline style "display: inline-block" yang mengesampingkan class Tailwind "flex flex-col". Akibatnya, container window tidak berperilaku sebagai flex container, dan child body window meluap melampaui tinggi window sehingga scroll mouse menggerakkan container window secara keseluruhan. Saat container ter-scroll, titlebar yang memuat tombol kontrol (close, minimize, maximize) ikut terdorong ke atas dan hilang.
+  - Fix: 
+    1. Menyuntikkan style inline eksplisit display: "flex", flexDirection: "column", overflow: "hidden" pada komponen Rnd di WindowFrame.tsx.
+    2. Menambahkan shrink-0 sticky top-0 z-20 pada window-titlebar agar posisinya terkunci di puncak jendela.
+    3. Mengatur wrapper body jendela menjadi flex-1 min-h-0 w-full overflow-hidden flex flex-col sehingga scroll hanya terjadi di dalam area konten aplikasi masing-masing tanpa pernah menggeser title bar.
+  - Verification: Terverifikasi lewat Playwright E2E test tests/e2e/window-controls-fixed.spec.ts di mana scroll mouse tidak mengubah koordinat y title bar dan tombol kontrol tetap dapat diklik secara normal.
+
+
+--- ADJUST ---
+
+[DONE] 1. Adjust design dengan desain ala Linux hyperland (+ Hapus password input di Lockscreen)
+  - Status: SOLVED (Claimed & Resolved by Antigravity)
+  - Details:
+    1. Password-Free Hyprlock: Menghapus input password pada LockScreen. Pengguna cukup menekan tombol Enter pada keyboard atau mengklik tombol unlock pill untuk langsung berpindah ke Welcome screen tanpa membutuhkan password.
+    2. Waybar Style Top Bar: Top bar desktop ditingkatkan menjadi status bar modular ala Waybar (Hyprland Wayland) lengkap dengan workspace switcher [1] [2] [3] [4] [5], dynamic active window pill, live seconds clock, system tag, dan quick lock module.
+    3. Hyprland Window Aesthetic: Jendela aktif memiliki active glowing neon border (shadow glow + accent border), titlebar bernuansa technical monospace dengan status tag [ floating / fullscreen ], serta latar dark glass high-contrast.
+  - Verification: Seluruh unit test dan suite Playwright E2E (os-flow, mobile-ios, drag-window, window-controls-fixed) teruji dan lulus 100%.

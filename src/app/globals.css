@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --linux-bg: #080b10;
+  --linux-surface: #0d1117;
+  --linux-surface-raised: #131a22;
+  --linux-surface-hover: #1a232d;
+  --linux-border: #26313a;
+  --linux-border-strong: #3a4854;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --linux-text: #e6edf3;
+  --linux-text-muted: #8b949e;
+  --linux-text-subtle: #6e7681;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --accent: #7dd3fc;
+  --accent-rgb: 125, 211, 252;
+  --linux-accent: var(--accent, #7dd3fc);
+  --linux-accent-strong: #38bdf8;
+  --linux-success: #7ee787;
+  --linux-warning: #f2cc60;
+  --linux-danger: #ff7b72;
+
+  --background: var(--linux-bg);
+  --foreground: var(--linux-text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--linux-bg);
+  color: var(--linux-text);
+  font-family:
+    "Plus Jakarta Sans Variable",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+::selection {
+  background-color: rgba(var(--accent-rgb), 0.3);
+  color: var(--linux-text);
+}
+
+/* Shared Hyprland / Linux UI Tokens & Utility Classes */
+.linux-panel {
+  background-color: var(--linux-surface);
+  border: 1px solid var(--linux-border);
+  border-radius: 6px;
+}
+
+.linux-panel-raised {
+  background-color: var(--linux-surface-raised);
+  border: 1px solid var(--linux-border);
+  border-radius: 6px;
+}
+
+.linux-panel-active {
+  background-color: var(--linux-surface-raised);
+  border: 1px solid var(--linux-accent);
+  border-radius: 6px;
+}
+
+.linux-panel-hover:hover {
+  background-color: var(--linux-surface-hover);
+  border-color: var(--linux-border-strong);
+}
+
+.linux-mono-label {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--linux-text-muted);
+}
+
+.linux-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: var(--linux-surface);
+  border: 1px solid var(--linux-border);
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+  color: var(--linux-text);
+}
+
+.linux-focus-ring:focus-visible {
+  outline: 1px solid var(--linux-accent);
+  outline-offset: 1px;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-10px);
+  }
+  40%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shake {
+    animation: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

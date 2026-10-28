@@ -1,26 +1,54 @@
 {
-  "name": "temp-scaffold",
+  "name": "sramadhan-cv",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/generate-manifests.mjs && node scripts/build-knowledge.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/generate-manifests.mjs && node scripts/build-knowledge.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "lucide-react": "^1.16.0",
+    "minisearch": "^7.2.0",
+    "motion": "^12.42.0",
+    "music-metadata": "^11.12.0",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "react-rnd": "^10.4.14",
+    "remark-gfm": "^4.0.1",
+    "zod": "^3.24.2",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.11.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.5.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^6.2.0",
+    "vitest": "^3.0.7"
   }
 }

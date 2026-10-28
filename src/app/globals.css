@@ -1,24 +1,80 @@
 @import "tailwindcss";
 
 :root {
-  --linux-bg: #080b10;
-  --linux-surface: #0d1117;
-  --linux-surface-raised: #131a22;
-  --linux-surface-hover: #1a232d;
-  --linux-border: #26313a;
-  --linux-border-strong: #3a4854;
+  /* 1. Page & Surfaces (design.md - Midnight Navy) */
+  --page-bg: #040d3f;
+  --surface-default: #141c4e;
+  --card-bg: #1d2552;
+  --card-bg-hover: #243066;
 
-  --linux-text: #e6edf3;
-  --linux-text-muted: #8b949e;
-  --linux-text-subtle: #6e7681;
+  /* 2. Foreground & Text (design.md) */
+  --text-primary: #ffffff;
+  --text-secondary: #b9bbc7;
+  --text-tertiary: #6a7178; /* Khusus state disabled */
+  --neutral-divider: #dee2e6;
+  --neutral-badge: #adb5bd;
+  --surface-divider: rgba(222, 226, 230, 0.1);
+  --surface-border-strong: rgba(222, 226, 230, 0.2);
 
-  --accent: #7dd3fc;
-  --accent-rgb: 125, 211, 252;
-  --linux-accent: var(--accent, #7dd3fc);
-  --linux-accent-strong: #38bdf8;
-  --linux-success: #7ee787;
-  --linux-warning: #f2cc60;
-  --linux-danger: #ff7b72;
+  /* 3. Status & Accents (design.md) */
+  --positive: #7fe089;
+  --positive-tint: rgba(127, 224, 137, 0.15);
+  --negative: #f97d7d;
+  --negative-tint: rgba(249, 125, 125, 0.15);
+  --info-cyan: #0d8091;
+  --info-cyan-bright: #1ab8c7;
+  --info-cyan-tint: rgba(13, 128, 145, 0.2);
+
+  /* 4. Named 135deg Gradients (design.md - Max 3 per viewport) */
+  --card-turquoise: linear-gradient(135deg, #0d8091 0%, #1ab8c7 100%);
+  --card-pink: linear-gradient(135deg, #b53d7f 0%, #e45d9a 100%);
+  --card-purple: linear-gradient(135deg, #5a2d8a 0%, #8b4fbf 100%);
+  --product-yellow: linear-gradient(135deg, #d4a017 0%, #f2c94c 100%);
+  --product-pink-soft: linear-gradient(135deg, #e64980 0%, #ff6b9d 100%);
+  --product-cyan-soft: linear-gradient(135deg, #2d7dd2 0%, #4fa8e8 100%);
+
+  /* 5. Elevation Shadows (design.md) */
+  --shadow-tile: 0 2px 4px 0 rgba(0, 0, 0, 0.10);
+  --shadow-card-big: 0 0 60px 0 rgba(0, 4, 26, 0.60);
+  --shadow-modal: 0 8px 32px 0 rgba(0, 0, 0, 0.30);
+
+  /* 6. Spacing Scale (Base 8px - design.md) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* 7. Border Radius Scale (design.md - No <=4px radii) */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* 8. Typography Font Families */
+  --font-sans: "Plus Jakarta Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* 9. Dynamic System Accent & Hyprland Alias Mapping */
+  --accent: #1ab8c7;
+  --accent-rgb: 26, 184, 199;
+  --linux-bg: var(--page-bg);
+  --linux-surface: var(--surface-default);
+  --linux-surface-raised: var(--card-bg);
+  --linux-surface-hover: var(--card-bg-hover);
+  --linux-border: var(--surface-divider);
+  --linux-border-strong: var(--surface-border-strong);
+  --linux-text: var(--text-primary);
+  --linux-text-muted: var(--text-secondary);
+  --linux-text-subtle: var(--text-secondary);
+  --linux-accent: var(--accent);
+  --linux-accent-strong: var(--info-cyan);
+  --linux-success: var(--positive);
+  --linux-warning: #f2c94c;
+  --linux-danger: var(--negative);
 
   --background: var(--linux-bg);
   --foreground: var(--linux-text);
@@ -27,13 +83,7 @@
 body {
   background-color: var(--linux-bg);
   color: var(--linux-text);
-  font-family:
-    "Plus Jakarta Sans Variable",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+  font-family: var(--font-sans);
   overflow: hidden;
   user-select: none;
 }
@@ -41,6 +91,49 @@ body {
 ::selection {
   background-color: rgba(var(--accent-rgb), 0.3);
   color: var(--linux-text);
+}
+
+/* Helper Classes from design.md */
+.midnight-tile {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-tile);
+}
+
+.midnight-tile-hover:hover {
+  background: var(--card-bg-hover);
+}
+
+.midnight-hero-card {
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card-big);
+}
+
+.midnight-pill-primary {
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  color: #040d3f;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.midnight-pill-toggle {
+  border-radius: var(--radius-full);
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.midnight-badge {
+  border-radius: var(--radius-xs);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tabular-mono {
+  font-family: var(--font-jetbrains-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Shared Hyprland / Linux UI Tokens & Utility Classes */
@@ -68,9 +161,7 @@ body {
 }
 
 .linux-mono-label {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: var(--font-jetbrains-mono);
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--linux-text-muted);
@@ -84,9 +175,7 @@ body {
   border-radius: 4px;
   background-color: var(--linux-surface);
   border: 1px solid var(--linux-border);
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: var(--font-jetbrains-mono);
   font-size: 11px;
   color: var(--linux-text);
 }

@@ -65,7 +65,7 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
       }
     : {
         background:
-          "linear-gradient(180deg, #0d1117 0%, #080b10 60%, #05070a 100%)",
+          "linear-gradient(180deg, #141c4e 0%, #040d3f 60%, #030925 100%)",
       };
 
   const handleWorkspaceClick = (ws: number) => {
@@ -80,32 +80,33 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
     <div
       data-testid="desktop-screen"
       style={backgroundStyle}
-      className="relative h-screen w-screen overflow-hidden select-none bg-[var(--linux-bg)] text-[var(--linux-text)]"
+      className="relative h-screen w-screen overflow-hidden select-none bg-[var(--page-bg)] text-[var(--text-primary)]"
     >
       {/* Dark Contrast Overlay for Hyprland Readability */}
-      <div className="absolute inset-0 bg-[#080b10]/65 pointer-events-none" />
+      <div className="absolute inset-0 bg-[rgba(4,13,63,0.72)] pointer-events-none" />
 
       {/* Waybar Modular Top Status Bar */}
       <header
         data-testid="desktop-top-bar"
-        className="absolute top-0 left-0 right-0 h-8 bg-[var(--linux-surface)]/95 border-b border-[var(--linux-border)] px-2.5 flex items-center justify-between z-20 text-[11px] font-mono"
+        className="absolute top-0 left-0 right-0 h-10 bg-[var(--surface-default)] px-6 flex items-center justify-between z-20 text-sm"
+        style={{ fontFamily: 'var(--font-jetbrains-mono)', boxShadow: 'var(--shadow-tile)' }}
       >
         {/* Left Modules: System Identity & Workspaces */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] border border-[var(--linux-border)]">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)]">
             <span
               className="font-bold"
-              style={{ color: accentColor || "var(--linux-accent)" }}
+              style={{ color: accentColor || "var(--accent)" }}
             >
               &gt;
             </span>
-            <span className="font-semibold tracking-tight text-[var(--linux-text)]">
+            <span className="font-semibold tracking-tight text-[var(--text-primary)]">
               sramadhan
             </span>
           </div>
 
           <div
-            className="hidden sm:flex items-center gap-0.5 px-1 py-0.5 rounded bg-[var(--linux-bg)] border border-[var(--linux-border)]"
+            className="hidden sm:flex items-center gap-1 px-1.5 py-1 rounded-[var(--radius-sm)] bg-[var(--page-bg)] border border-[var(--surface-border-strong)]"
             role="group"
             aria-label="Workspaces"
           >
@@ -120,16 +121,18 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
                   style={
                     isActive
                       ? {
-                          borderColor: accentColor || "var(--linux-accent)",
-                          backgroundColor: "rgba(var(--accent-rgb), 0.15)",
-                          color: "var(--linux-text)",
+                          backgroundColor: "var(--card-bg)",
+                          color: "var(--text-primary)",
+                          borderColor: "var(--accent)",
+                          borderBottomColor: "var(--accent)",
+                          borderBottomWidth: "2px",
                         }
                       : {}
                   }
-                  className={`h-5 w-5 rounded-[4px] flex items-center justify-center text-[10px] font-mono font-semibold border transition-colors linux-focus-ring ${
+                  className={`h-6 w-6 rounded-[var(--radius-xs)] flex items-center justify-center text-xs font-semibold border transition-colors linux-focus-ring ${
                     isActive
                       ? ""
-                      : "border-transparent text-[var(--linux-text-muted)] hover:text-[var(--linux-text)] hover:bg-[var(--linux-surface-hover)]"
+                      : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-bg-hover)]"
                   }`}
                 >
                   {ws}
@@ -140,14 +143,14 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
         </div>
 
         {/* Center Module: Active Application / Wayland Session */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-0.5 rounded bg-[var(--linux-surface-raised)] border border-[var(--linux-border)] text-[var(--linux-text-muted)]">
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]">
           <Terminal
-            className="h-3 w-3"
-            style={{ color: accentColor || "var(--linux-accent)" }}
+            className="h-4 w-4"
+            style={{ color: accentColor || "var(--accent)" }}
           />
-          <span className="truncate max-w-[260px] text-[var(--linux-text)]">
+          <span className="truncate max-w-xs text-[var(--text-primary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
             {activeAppMeta
-              ? `${t(activeAppMeta.titleKey)} — sramadhan@wayland`
+              ? `${t(activeAppMeta.titleKey)} // sramadhan@wayland`
               : "sramadhan@wayland"}
           </span>
         </div>
@@ -155,17 +158,17 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
         {/* Right Modules: CPU/RAM, Battery, Language, Clock, Lock */}
         <div className="flex items-center gap-1.5">
           {/* CPU & RAM */}
-          <div className="hidden md:flex items-center gap-2 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] border border-[var(--linux-border)] text-[var(--linux-text-muted)]">
-            <Cpu className="h-3 w-3 text-[var(--linux-success)]" />
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            <Cpu className="h-4 w-4 text-[var(--positive)]" />
             <span>CPU {sysmon.cpu}%</span>
-            <span className="text-[var(--linux-border-strong)]">|</span>
+            <span className="text-[var(--surface-border-strong)]">·</span>
             <span>RAM {sysmon.ram}%</span>
           </div>
 
           {/* Battery if available */}
           {battery.isSupported && battery.level !== null && (
-            <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] border border-[var(--linux-border)] text-[var(--linux-text-muted)]">
-              <Battery className="h-3 w-3 text-[var(--linux-success)]" />
+            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <Battery className="h-4 w-4 text-[var(--positive)]" />
               <span>{battery.level}%</span>
             </div>
           )}
@@ -175,38 +178,38 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
             type="button"
             onClick={() => setLocale(locale === "id" ? "en" : "id")}
             aria-label="Switch language"
-            className="flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] hover:bg-[var(--linux-surface-hover)] border border-[var(--linux-border)] hover:border-[var(--linux-border-strong)] text-[var(--linux-text)] transition-colors linux-focus-ring uppercase"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] hover:bg-[var(--card-bg-hover)] border border-[var(--surface-border-strong)] text-[var(--text-primary)] transition-colors linux-focus-ring uppercase text-xs font-semibold"
           >
-            <Globe className="h-3 w-3 text-[var(--linux-text-muted)]" />
+            <Globe className="h-4 w-4 text-[var(--text-secondary)]" />
             <span>{locale}</span>
           </button>
 
           {/* Time */}
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] border border-[var(--linux-border)] text-[var(--linux-text)]">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>
             <Clock
-              className="h-3 w-3"
-              style={{ color: accentColor || "var(--linux-accent)" }}
+              className="h-4 w-4"
+              style={{ color: accentColor || "var(--accent)" }}
             />
             <span>{timeStr}</span>
           </div>
 
-          {/* Lock Button */}
+          {/* Lock Button - Pill Action */}
           <button
             type="button"
             data-testid="desktop-lock-button"
             onClick={lock}
             aria-label={t("system.lock")}
-            className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[var(--linux-surface-raised)] hover:bg-[var(--linux-danger)]/20 border border-[var(--linux-border)] hover:border-[var(--linux-danger)] transition-colors text-[var(--linux-text-muted)] hover:text-[var(--linux-danger)] linux-focus-ring"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-[var(--radius-full)] bg-[var(--negative-tint)] hover:bg-[var(--negative-tint)] border border-[var(--negative)] text-[var(--negative)] transition-all text-xs font-semibold linux-focus-ring"
             title={t("system.lock")}
           >
-            <Lock className="h-3 w-3" />
+            <Lock className="h-4 w-4" />
             <span>{t("system.lock")}</span>
           </button>
         </div>
       </header>
 
       {/* Main desktop workspace where windows live */}
-      <main className="relative h-full w-full pt-8 pb-20">
+      <main className="relative h-full w-full pt-10 pb-20">
         <WindowManager />
         {children}
       </main>

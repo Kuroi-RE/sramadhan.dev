@@ -58,8 +58,10 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
         borderColor: instance.isMaximized
           ? "transparent"
           : isFocused
-            ? accentColor || "var(--linux-accent)"
-            : "var(--linux-border)",
+            ? accentColor || "var(--accent)"
+            : "rgba(222, 226, 230, 0.08)",
+        borderWidth: "1px",
+        boxShadow: isFocused ? "var(--shadow-card-big)" : "var(--shadow-tile)",
       }}
       onMouseDown={() => focusWindow(instance.id)}
       onDragStop={(_e, d) => {
@@ -81,34 +83,34 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
           });
         }
       }}
-      className={`pointer-events-auto absolute flex flex-col rounded-md border bg-[var(--linux-surface)] overflow-hidden transition-shadow ${
+      className={`pointer-events-auto absolute flex flex-col rounded-[var(--radius-md)] bg-[var(--surface-default)] overflow-hidden transition-all ${
         instance.isMaximized ? "rounded-none border-0" : ""
-      } ${isFocused ? "shadow-2xl opacity-100" : "shadow-md opacity-95"}`}
+      } ${isFocused ? "opacity-100" : "opacity-95"}`}
     >
       {/* Linux / Hyprland Title Bar */}
       <div
         data-testid={`window-titlebar-${instance.id}`}
-        className={`window-titlebar shrink-0 sticky top-0 z-20 flex h-8 w-full items-center justify-between border-b border-[var(--linux-border)] px-3 cursor-grab active:cursor-grabbing select-none transition-colors ${
+        className={`window-titlebar shrink-0 sticky top-0 z-20 flex h-9 w-full items-center justify-between border-b px-4 cursor-grab active:cursor-grabbing select-none transition-colors ${
           isFocused
-            ? "bg-[var(--linux-surface-raised)] text-[var(--linux-text)]"
-            : "bg-[var(--linux-surface)] text-[var(--linux-text-muted)]"
+            ? "bg-[var(--card-bg)] text-[var(--text-primary)] border-[var(--surface-border-strong)]"
+            : "bg-[var(--surface-default)] text-[var(--text-secondary)] border-[rgba(222, 226, 230, 0.08)]"
         }`}
         onDoubleClick={() => maximizeWindow(instance.id)}
       >
         {/* Left: App Icon, Title & Mode Tag */}
-        <div className="flex items-center gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2 text-sm" style={{ fontFamily: 'var(--font-sans)' }}>
           <Icon
-            className="h-3.5 w-3.5 shrink-0"
+            className="h-4 w-4 shrink-0"
             style={{
               color: isFocused
-                ? accentColor || "var(--linux-accent)"
-                : "var(--linux-text-muted)",
+                ? accentColor || "var(--accent)"
+                : "var(--text-secondary)",
             }}
           />
           <span className="font-semibold tracking-tight">
             {t(instance.titleKey)}
           </span>
-          <span className="px-1.5 py-0.5 rounded-[4px] bg-[var(--linux-bg)] border border-[var(--linux-border)] text-[10px] font-mono text-[var(--linux-text-subtle)] uppercase">
+          <span className="px-2 py-0.5 rounded-[var(--radius-xs)] bg-[var(--page-bg)] border border-[var(--surface-border-strong)] text-[10px] font-semibold text-[var(--text-secondary)] uppercase" style={{ fontFamily: 'var(--font-sans)' }}>
             {instance.isMaximized ? "fullscreen" : "floating"}
           </span>
         </div>
@@ -122,11 +124,11 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
               e.stopPropagation();
               minimizeWindow(instance.id);
             }}
-            className="flex h-6 w-6 items-center justify-center rounded-[4px] bg-[var(--linux-surface)] hover:bg-[var(--linux-surface-hover)] border border-[var(--linux-border)] text-[var(--linux-text-muted)] hover:text-[var(--linux-text)] transition-colors linux-focus-ring"
+            className="flex h-6 w-6 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--surface-default)] hover:bg-[var(--card-bg-hover)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors linux-focus-ring"
             aria-label={t("common.minimize")}
             title={t("common.minimize")}
           >
-            —
+            −
           </button>
           <button
             type="button"
@@ -135,7 +137,7 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
               e.stopPropagation();
               maximizeWindow(instance.id);
             }}
-            className="flex h-6 w-6 items-center justify-center rounded-[4px] bg-[var(--linux-surface)] hover:bg-[var(--linux-surface-hover)] border border-[var(--linux-border)] text-[var(--linux-text-muted)] hover:text-[var(--linux-text)] transition-colors linux-focus-ring"
+            className="flex h-6 w-6 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--surface-default)] hover:bg-[var(--card-bg-hover)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors linux-focus-ring"
             aria-label={t("common.maximize")}
             title={t("common.maximize")}
           >
@@ -148,7 +150,7 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
               e.stopPropagation();
               closeWindow(instance.id);
             }}
-            className="flex h-6 w-6 items-center justify-center rounded-[4px] bg-[var(--linux-surface)] hover:bg-[var(--linux-danger)]/20 border border-[var(--linux-border)] hover:border-[var(--linux-danger)] text-[var(--linux-text-muted)] hover:text-[var(--linux-danger)] transition-colors linux-focus-ring"
+            className="flex h-6 w-6 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--surface-default)] hover:bg-[var(--negative-tint)] border border-[var(--surface-border-strong)] hover:border-[var(--negative)] text-[var(--text-secondary)] hover:text-[var(--negative)] transition-colors linux-focus-ring"
             aria-label={t("common.close")}
             title={t("common.close")}
           >
@@ -158,7 +160,7 @@ export function WindowFrame({ instance, metadata }: WindowFrameProps) {
       </div>
 
       {/* Window Body */}
-      <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col bg-[var(--linux-surface)]">
+      <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col bg-[var(--surface-default)]">
         <Component />
       </div>
     </Rnd>

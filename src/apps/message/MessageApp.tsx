@@ -243,7 +243,7 @@ export function MessageApp() {
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--linux-success)]" />
             <span className="text-xs font-mono font-semibold text-[var(--linux-text)]">
-              #assistant — Satria&apos;s Assistant (AI)
+              #assistant // Satria&apos;s Assistant (AI)
             </span>
           </div>
           <div className="text-[11px] text-[var(--linux-text-muted)] font-mono">

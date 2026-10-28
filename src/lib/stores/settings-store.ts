@@ -11,14 +11,14 @@ export interface AccentPreset {
 }
 
 export const ACCENT_PRESETS: AccentPreset[] = [
-  { id: "cyan", name: "Cyan", color: "#7dd3fc", rgb: "125, 211, 252" },
-  { id: "blue", name: "Blue", color: "#38bdf8", rgb: "56, 189, 248" },
-  { id: "purple", name: "Purple", color: "#a855f7", rgb: "168, 85, 247" },
-  { id: "green", name: "Green", color: "#7ee787", rgb: "126, 231, 135" },
-  { id: "yellow", name: "Amber", color: "#f2cc60", rgb: "242, 204, 96" },
-  { id: "red", name: "Coral", color: "#ff7b72", rgb: "255, 123, 114" },
-  { id: "pink", name: "Magenta", color: "#f472b6", rgb: "244, 114, 182" },
-  { id: "graphite", name: "Slate", color: "#8b949e", rgb: "139, 148, 158" },
+  { id: "cyan", name: "Turquoise", color: "#1ab8c7", rgb: "26, 184, 199" },
+  { id: "pink", name: "Rose Pink", color: "#e45d9a", rgb: "228, 93, 154" },
+  { id: "purple", name: "Royal Purple", color: "#8b4fbf", rgb: "139, 79, 191" },
+  { id: "green", name: "Mint Positive", color: "#7fe089", rgb: "127, 224, 137" },
+  { id: "yellow", name: "Gold Warm", color: "#f2c94c", rgb: "242, 201, 76" },
+  { id: "red", name: "Coral Alert", color: "#f97d7d", rgb: "249, 125, 125" },
+  { id: "blue", name: "Soft Sky", color: "#4fa8e8", rgb: "79, 168, 232" },
+  { id: "graphite", name: "Cool Silver", color: "#b9bbc7", rgb: "185, 187, 199" },
 ];
 
 export function applyAccentToCss(colorHex: string) {
@@ -44,7 +44,7 @@ export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
       locale: "id",
-      accentColor: "#7dd3fc",
+      accentColor: "#1ab8c7",
       wallpaperId: "default",
       setLocale: (locale) => set({ locale }),
       setAccentColor: (accentColor) => {

@@ -136,7 +136,7 @@ export function TerminalApp() {
       <div className="flex items-center justify-between px-4 py-1.5 border-b border-[var(--linux-border)] bg-[var(--linux-surface)] text-[11px] text-[var(--linux-text-muted)] select-none shrink-0">
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--linux-success)]" />
-          <span>bash — guest@sramadhan.cv</span>
+          <span>bash // guest@sramadhan.cv</span>
         </div>
         <span className="text-[var(--linux-text-subtle)]">tty1 // zsh-5.9</span>
       </div>
@@ -145,7 +145,7 @@ export function TerminalApp() {
         {/* Banner */}
         <div className="mb-4 text-xs text-[var(--linux-text-subtle)] select-none">
           <div className="text-[var(--linux-text-muted)]">
-            SatriaOS Terminal [Version 1.0.0 — Hyprland/Wayland]
+            SatriaOS Terminal [Version 1.0.0 // Hyprland/Wayland]
           </div>
           <div>(c) 2026 Satria Ramadhan. All rights reserved.</div>
           <div className="mt-1 text-[var(--linux-text-muted)]">

@@ -104,31 +104,35 @@ export function BootScreen() {
   return (
     <div
       data-testid="boot-screen"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--linux-bg)] text-[var(--linux-text)] select-none"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--page-bg)] text-[var(--text-primary)] select-none"
     >
       <div className="flex flex-col items-center max-w-xs w-full px-6">
-        <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[var(--linux-surface)] border border-[var(--linux-border-strong)] mb-6">
-          <span className="text-xl font-mono font-bold tracking-wider text-[var(--linux-accent)]">
+        <div 
+          className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-gradient-to-br from-[#0d8091] to-[#1ab8c7] mb-6"
+          style={{ boxShadow: 'var(--shadow-card-big)' }}
+        >
+          <span className="text-xl font-bold tracking-wider text-[#ffffff]" style={{ fontFamily: 'var(--font-jetbrains-mono)' }}>
             SR
           </span>
         </div>
 
-        <div className="w-full flex items-center justify-between text-[10px] font-mono text-[var(--linux-text-subtle)] mb-1.5">
+        <div className="w-full flex items-center justify-between text-[12px] text-[var(--text-secondary)] mb-1.5" style={{ fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>
           <span>systemd-boot // hyprland</span>
           <span>{progress}%</span>
         </div>
 
-        <div className="w-full bg-[var(--linux-surface-raised)] border border-[var(--linux-border)] rounded-[2px] h-1.5 overflow-hidden mb-3">
+        <div className="w-full bg-[var(--card-bg-hover)] rounded-[var(--radius-full)] h-1 overflow-hidden mb-3">
           <div
             data-testid="boot-progress-bar"
-            className="bg-[var(--linux-accent)] h-full transition-all duration-300 ease-out"
+            className="bg-[var(--positive)] h-full transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
 
         <p
           data-testid="boot-status"
-          className="text-xs font-mono text-[var(--linux-text-muted)] tracking-wide"
+          className="text-xs text-[var(--text-secondary)] tracking-wide"
+          style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
         >
           {statusMessage || t("system.booting")}
         </p>

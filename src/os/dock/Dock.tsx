@@ -32,7 +32,7 @@ export function Dock() {
       data-testid="dock-container"
       className="fixed bottom-2.5 left-1/2 -translate-x-1/2 z-50 pointer-events-auto select-none"
     >
-      <div className="flex items-center gap-1.5 rounded-md border border-[var(--linux-border)] bg-[var(--linux-surface)]/95 px-2.5 py-1.5 shadow-xl">
+      <div className="flex items-center gap-1 rounded-[var(--radius-lg)] border border-[var(--surface-border-strong)] bg-[var(--surface-default)] px-2 py-2" style={{ boxShadow: 'var(--shadow-modal)' }}>
         {APP_LIST.map((app) => {
           const Icon = app.icon;
           const isRunning = windows[app.id]?.isOpen;
@@ -47,7 +47,7 @@ export function Dock() {
               className="group relative flex flex-col items-center"
             >
               {/* Compact Linux Panel Tooltip */}
-              <div className="pointer-events-none absolute -top-8 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-100 rounded-[4px] bg-[var(--linux-surface-raised)] border border-[var(--linux-border-strong)] px-2 py-0.5 text-[11px] font-mono text-[var(--linux-text)] shadow-md whitespace-nowrap">
+              <div className="pointer-events-none absolute -top-8 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-100 rounded-[var(--radius-xs)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] px-2 py-0.5 text-[11px] font-semibold text-[var(--text-primary)] shadow-md whitespace-nowrap" style={{ fontFamily: 'var(--font-sans)' }}>
                 {t(app.titleKey)}
               </div>
 
@@ -64,10 +64,10 @@ export function Dock() {
                       }
                     : {}
                 }
-                className={`relative flex h-9 w-9 items-center justify-center rounded-[5px] border transition-colors linux-focus-ring ${
+                className={`relative flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] border transition-all linux-focus-ring ${
                   isActive
-                    ? "text-[var(--linux-text)]"
-                    : "bg-[var(--linux-surface-raised)] hover:bg-[var(--linux-surface-hover)] border-[var(--linux-border)] hover:border-[var(--linux-border-strong)] text-[var(--linux-text-muted)] hover:text-[var(--linux-text)]"
+                    ? "text-[var(--text-primary)] bg-[var(--card-bg)] border-[var(--accent)]"
+                    : "bg-[var(--card-bg)] hover:bg-[var(--card-bg-hover)] border-[var(--surface-border-strong)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
                 aria-label={t(app.titleKey)}
               >

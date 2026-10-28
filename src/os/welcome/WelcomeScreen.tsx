@@ -47,25 +47,26 @@ export function WelcomeScreen() {
     <div
       data-testid="welcome-screen"
       style={backgroundStyle}
-      className="fixed inset-0 z-30 flex flex-col items-center justify-center text-[var(--linux-text)] select-none overflow-hidden"
+      className="fixed inset-0 z-30 flex flex-col items-center justify-center text-[var(--text-primary)] select-none overflow-hidden"
     >
-      <div className="absolute inset-0 bg-[#080b10]/75 backdrop-blur-[4px]" />
+      <div className="absolute inset-0 bg-[rgba(4,13,63,0.78)] backdrop-blur-[8px]" />
 
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
-        className="relative z-10 flex flex-col items-start max-w-md w-full mx-6 p-6 rounded-md bg-[var(--linux-surface)]/95 border border-[var(--linux-accent)]"
+        className="relative z-10 flex flex-col items-start max-w-md w-full mx-6 p-5 rounded-[var(--radius-lg)] bg-gradient-to-br from-[#0d8091] to-[#1ab8c7]"
+        style={{ boxShadow: 'var(--shadow-card-big)' }}
       >
-        <div className="w-full flex items-center justify-between pb-3 mb-4 border-b border-[var(--linux-border)] text-[11px] font-mono text-[var(--linux-text-subtle)]">
+        <div className="w-full flex items-center justify-between pb-3 mb-4 border-b border-[rgba(255,255,255,0.15)] text-[11px] text-[rgba(255,255,255,0.9)]" style={{ fontFamily: 'var(--font-jetbrains-mono)' }}>
           <span>[OK] session initialized</span>
-          <span className="text-[var(--linux-accent)]">wayland-0</span>
+          <span className="text-[rgba(255,255,255,0.8)]">wayland-0</span>
         </div>
 
         <div className="flex items-center gap-3.5 mb-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-md bg-[var(--linux-surface-raised)] border border-[var(--linux-accent)]/50">
-            <span className="text-sm font-mono font-bold tracking-wider text-[var(--linux-accent)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[rgba(255,255,255,0.15)] border border-[rgba(255,255,255,0.3)]">
+            <span className="text-sm font-bold tracking-wider text-[#ffffff]" style={{ fontFamily: 'var(--font-jetbrains-mono)' }}>
               {profile.name
                 .split(" ")
                 .map((n) => n[0])
@@ -73,19 +74,20 @@ export function WelcomeScreen() {
             </span>
           </div>
           <div>
-            <div className="text-[11px] font-mono text-[var(--linux-success)]">
+            <div className="text-[11px] text-[rgba(255,255,255,0.7)]" style={{ fontFamily: 'var(--font-sans)' }}>
               welcome, {profile.name}
             </div>
             <h1
               data-testid="welcome-message"
-              className="text-xl md:text-2xl font-semibold tracking-tight text-[var(--linux-text)]"
+              className="text-xl md:text-2xl font-semibold tracking-tight text-[#ffffff]"
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
               {t("system.welcome")}
             </h1>
           </div>
         </div>
 
-        <p className="text-xs font-mono text-[var(--linux-text-muted)]">
+        <p className="text-xs text-[rgba(255,255,255,0.7)]" style={{ fontFamily: 'var(--font-sans)' }}>
           {profile.role}
         </p>
       </motion.div>

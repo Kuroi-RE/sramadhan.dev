@@ -96,10 +96,11 @@ export function IslandView() {
         }
         style={{
           borderColor: isExpanded
-            ? accentColor || "var(--linux-accent)"
-            : "var(--linux-border)",
+            ? accentColor || "var(--accent)"
+            : "var(--surface-border-strong)",
+          boxShadow: 'var(--shadow-card-big)',
         }}
-        className="relative overflow-hidden bg-[var(--linux-surface)] text-[var(--linux-text)] shadow-xl border flex flex-col justify-between"
+        className="relative overflow-hidden bg-[var(--card-bg)] text-[var(--text-primary)] border flex flex-col justify-between"
       >
         {!isExpanded ? (
           /* COLLAPSED VIEW (Waybar / eww Status Module) */
@@ -114,7 +115,7 @@ export function IslandView() {
           >
             <div className="flex items-center gap-2">
               <PandaMascot size={18} isSleeping={!isPlaying} />
-              <span className="text-[11px] font-medium text-[var(--linux-text)] font-mono tracking-tight">
+              <span className="text-[12px] font-medium text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>
                 {timeStr}
               </span>
             </div>
@@ -122,17 +123,17 @@ export function IslandView() {
             <div className="flex items-center gap-2 max-w-[120px]">
               {track ? (
                 <>
-                  <span className="text-[11px] font-mono text-[var(--linux-text-muted)] truncate">
+                  <span className="text-[12px] text-[var(--text-secondary)] truncate" style={{ fontFamily: 'var(--font-sans)' }}>
                     {track.title}
                   </span>
                   {isPlaying ? (
                     <Spectrum barCount={6} height={12} />
                   ) : (
-                    <Music className="h-3 w-3 text-[var(--linux-text-subtle)] shrink-0" />
+                    <Music className="h-3 w-3 text-[var(--text-secondary)] shrink-0" />
                   )}
                 </>
               ) : (
-                <span className="text-[11px] text-[var(--linux-text-muted)] font-mono tracking-wide">
+                <span className="text-[12px] text-[var(--text-secondary)] font-mono tracking-wide" style={{ fontFamily: 'var(--font-sans)' }}>
                   syswidget
                 </span>
               )}
@@ -156,14 +157,14 @@ export function IslandView() {
                 <MetricRing
                   label="CPU"
                   value={sysmon.cpu}
-                  color={accentColor || "#7dd3fc"}
+                  color={accentColor || "#1ab8c7"}
                 />
-                <MetricRing label="RAM" value={sysmon.ram} color="#a855f7" />
+                <MetricRing label="RAM" value={sysmon.ram} color="#1ab8c7" />
                 {battery.isSupported && battery.level !== null && (
                   <MetricRing
                     label={battery.charging ? "CHRG" : "BAT"}
                     value={battery.level}
-                    color={battery.level > 20 ? "#7ee787" : "#ff7b72"}
+                    color={battery.level > 20 ? "#7fe089" : "#f97d7d"}
                   />
                 )}
               </div>
@@ -223,7 +224,7 @@ export function IslandView() {
             <div className="my-auto text-center px-2 py-1 rounded bg-[var(--linux-bg)] border border-[var(--linux-border)]">
               <div className="text-xs font-mono font-semibold text-[var(--linux-text)] truncate">
                 {track
-                  ? `${track.title} — ${track.artist}`
+                  ? `${track.title} · ${track.artist}`
                   : "No active audio stream"}
               </div>
               <div

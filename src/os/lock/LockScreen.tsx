@@ -72,26 +72,28 @@ export function LockScreen() {
       data-testid="lock-screen"
       style={backgroundStyle}
       onClick={handleUnlock}
-      className="fixed inset-0 z-40 flex flex-col justify-between items-center text-[var(--linux-text)] p-8 select-none overflow-hidden cursor-pointer"
+      className="fixed inset-0 z-40 flex flex-col justify-between items-center text-[var(--text-primary)] p-8 select-none overflow-hidden cursor-pointer"
     >
       {/* Hyprlock dark overlay */}
-      <div className="absolute inset-0 bg-[#080b10]/70 backdrop-blur-[6px]" />
+      <div className="absolute inset-0 bg-[rgba(4,13,63,0.78)] backdrop-blur-[8px]" />
 
       {/* Top Clock and Date */}
       <div className="relative z-10 flex flex-col items-center mt-10 text-center pointer-events-none">
-        <div className="linux-status-chip mb-3 border border-[var(--linux-border)] bg-[var(--linux-surface)]/80">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--linux-accent)]" />
-          <span>SESSION LOCKED // HYPRLOCK</span>
+        <div className="midnight-badge mb-3 bg-[var(--info-cyan-tint)] text-[var(--info-cyan-bright)]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--info-cyan-bright)] inline-block mr-2" />
+          SESSION LOCKED // HYPRLOCK
         </div>
         <h1
           data-testid="lock-time"
-          className="text-6xl md:text-7xl font-mono font-semibold tracking-tight text-[var(--linux-text)]"
+          className="text-6xl md:text-7xl font-semibold tracking-tight text-[var(--text-primary)]"
+          style={{ fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}
         >
           {formattedTime}
         </h1>
         <p
           data-testid="lock-date"
-          className="mt-2 text-xs md:text-sm font-mono uppercase tracking-widest text-[var(--linux-text-muted)]"
+          className="mt-2 text-xs md:text-sm uppercase tracking-widest text-[var(--text-secondary)]"
+          style={{ fontFamily: 'var(--font-sans)' }}
         >
           {formattedDate}
         </p>
@@ -99,14 +101,15 @@ export function LockScreen() {
 
       {/* Center User Profile and Enter-to-Unlock Action */}
       <div
-        className="relative z-10 flex flex-col items-center max-w-sm w-full mb-10 p-6 rounded-md bg-[var(--linux-surface)]/90 border border-[var(--linux-border-strong)]"
+        className="relative z-10 flex flex-col items-center max-w-sm w-full mb-10 p-6 rounded-[var(--radius-lg)] bg-[var(--surface-default)] border border-[var(--surface-border-strong)]"
         onClick={(e) => e.stopPropagation()}
+        style={{ boxShadow: 'var(--shadow-modal)' }}
       >
         <div
-          className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-md border bg-[var(--linux-surface-raised)] overflow-hidden"
-          style={{ borderColor: accentColor || "var(--linux-accent)" }}
+          className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-[var(--radius-full)] border-2 bg-[var(--card-bg)] overflow-hidden"
+          style={{ borderColor: accentColor || "var(--accent)" }}
         >
-          <div className="text-lg font-mono font-bold text-[var(--linux-accent)] tracking-widest">
+          <div className="text-lg font-bold text-[var(--text-primary)] tracking-widest" style={{ fontFamily: 'var(--font-jetbrains-mono)' }}>
             {profile.name
               .split(" ")
               .map((n) => n[0])
@@ -116,38 +119,35 @@ export function LockScreen() {
 
         <h2
           data-testid="lock-user-name"
-          className="text-base font-semibold text-[var(--linux-text)] mb-0.5"
+          className="text-base font-semibold text-[var(--text-primary)] mb-0.5"
         >
           {profile.name}
         </h2>
-        <p className="text-xs text-[var(--linux-text-muted)] mb-5 font-mono">
+        <p className="text-xs text-[var(--text-secondary)] mb-5" style={{ fontFamily: 'var(--font-sans)' }}>
           {profile.role}
         </p>
 
-        {/* Hyprlock Enter-to-Unlock Button */}
+        {/* Hyprlock Unlock Button - Pill Primary */}
         <button
           type="button"
           data-testid="lock-submit-button"
           onClick={handleUnlock}
-          className="linux-focus-ring group relative w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-md bg-[var(--linux-surface-raised)] hover:bg-[var(--linux-surface-hover)] border border-[var(--linux-accent)]/60 hover:border-[var(--linux-accent)] transition-colors duration-150"
+          className="linux-focus-ring group relative w-full px-6 py-3 rounded-[var(--radius-full)] bg-[#ffffff] hover:bg-[#f0f0f0] text-[#040d3f] font-semibold transition-all duration-150"
         >
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-[var(--linux-accent)]/15 text-[var(--linux-accent)] font-mono text-xs">
-              <CornerDownLeft className="h-3 w-3" />
-            </div>
-            <span className="text-xs font-mono font-medium tracking-wide text-[var(--linux-text)]">
+          <div className="flex items-center justify-center gap-2">
+            <CornerDownLeft className="h-4 w-4" />
+            <span className="text-sm" style={{ fontFamily: 'var(--font-sans)' }}>
               {locale === "id"
                 ? "Tekan Enter atau Klik untuk Masuk"
                 : "Press Enter or Click to Unlock"}
             </span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-[var(--linux-accent)] group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 
       {/* Bottom Hyprland indicator */}
-      <div className="relative z-10 flex items-center gap-2 text-[11px] font-mono text-[var(--linux-text-muted)] mb-2 px-3 py-1 rounded-[5px] bg-[var(--linux-surface)]/90 border border-[var(--linux-border)] pointer-events-none">
-        <LockOpen className="h-3 w-3 text-[var(--linux-success)]" />
+      <div className="relative z-10 flex items-center gap-2 text-[11px] text-[var(--text-secondary)] mb-2 px-3 py-1 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] pointer-events-none" style={{ fontFamily: 'var(--font-jetbrains-mono)' }}>
+        <LockOpen className="h-3 w-3 text-[var(--positive)]" />
         <span>press Enter to start session</span>
       </div>
     </div>

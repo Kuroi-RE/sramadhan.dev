@@ -114,4 +114,51 @@ describe("/api/chat Route Handler", () => {
     const resText = await res.text();
     expect(resText).toContain("Halo!");
   });
+
+  it("formats image_url multimodal payload correctly for upstream LLM", async () => {
+    let capturedBody: any;
+    global.fetch = vi.fn().mockImplementation((_url, init) => {
+      capturedBody = JSON.parse(init.body);
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            choices: [
+              { message: { role: "assistant", content: "Vision response" } },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+      );
+    });
+
+    const req = new NextRequest("http://127.0.0.1:3000/api/chat", {
+      method: "POST",
+      body: JSON.stringify({
+        assistantId: "general",
+        messages: [
+          {
+            role: "user",
+            content: "Apa isi gambar ini?",
+            images: [
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+            ],
+          },
+        ],
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    const userMessage = capturedBody.messages.find(
+      (m: any) => m.role === "user"
+    );
+    expect(Array.isArray(userMessage.content)).toBe(true);
+    expect(userMessage.content[0].type).toBe("text");
+    expect(userMessage.content[0].text).toBe("Apa isi gambar ini?");
+    expect(userMessage.content[1].type).toBe("image_url");
+    expect(userMessage.content[1].image_url.url).toContain(
+      "data:image/png;base64"
+    );
+  });
 });

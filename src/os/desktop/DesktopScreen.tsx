@@ -89,9 +89,12 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
       <header
         data-testid="desktop-top-bar"
         className="absolute top-0 left-0 right-0 h-10 bg-[var(--surface-default)] px-6 flex items-center justify-between z-20 text-sm"
-        style={{ fontFamily: 'var(--font-jetbrains-mono)', boxShadow: 'var(--shadow-tile)' }}
+        style={{
+          fontFamily: "var(--font-jetbrains-mono)",
+          boxShadow: "var(--shadow-tile)",
+        }}
       >
-        {/* Left Modules: System Identity & Workspaces */}
+        {/* Left Modules: System Identity, Workspaces & Active Application Info */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)]">
             <span
@@ -140,25 +143,34 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
               );
             })}
           </div>
+
+          {/* Active Application / Wayland Session (Moved to left to prevent overlap with Notch PioPio) */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]">
+            <Terminal
+              className="h-4 w-4"
+              style={{ color: accentColor || "var(--accent)" }}
+            />
+            <span
+              className="truncate max-w-xs text-[var(--text-primary)]"
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {activeAppMeta
+                ? `${t(activeAppMeta.titleKey)} // sramadhan@wayland`
+                : "sramadhan@wayland"}
+            </span>
+          </div>
         </div>
 
-        {/* Center Module: Active Application / Wayland Session */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]">
-          <Terminal
-            className="h-4 w-4"
-            style={{ color: accentColor || "var(--accent)" }}
-          />
-          <span className="truncate max-w-xs text-[var(--text-primary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {activeAppMeta
-              ? `${t(activeAppMeta.titleKey)} // sramadhan@wayland`
-              : "sramadhan@wayland"}
-          </span>
-        </div>
+        {/* Center space kept empty for Notch PioPio (IslandView) */}
+        <div className="flex-1" aria-hidden="true" />
 
         {/* Right Modules: CPU/RAM, Battery, Language, Clock, Lock */}
         <div className="flex items-center gap-1.5">
           {/* CPU & RAM */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          <div
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]"
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
             <Cpu className="h-4 w-4 text-[var(--positive)]" />
             <span>CPU {sysmon.cpu}%</span>
             <span className="text-[var(--surface-border-strong)]">·</span>
@@ -167,7 +179,10 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
 
           {/* Battery if available */}
           {battery.isSupported && battery.level !== null && (
-            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            <div
+              className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-secondary)]"
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
               <Battery className="h-4 w-4 text-[var(--positive)]" />
               <span>{battery.level}%</span>
             </div>
@@ -185,7 +200,13 @@ export function DesktopScreen({ children }: DesktopScreenProps) {
           </button>
 
           {/* Time */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>
+          <div
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] bg-[var(--card-bg)] border border-[var(--surface-border-strong)] text-[var(--text-primary)]"
+            style={{
+              fontFamily: "var(--font-jetbrains-mono)",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
             <Clock
               className="h-4 w-4"
               style={{ color: accentColor || "var(--accent)" }}

@@ -2,17 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { chatbotConfig } from "../../../../content/chatbot/config";
+import {
+  chatbotConfig,
+  ASSISTANT_PROFILES,
+} from "../../../../content/chatbot/config";
 import { buildSystemPrompt } from "@/lib/chatbot";
 
+const ChatMessageItemSchema = z
+  .object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().max(chatbotConfig.maxMessageLength).default(""),
+    images: z.array(z.string()).max(4).optional(),
+  })
+  .refine(
+    (item) =>
+      item.content.trim().length > 0 || (item.images && item.images.length > 0),
+    {
+      message: "Pesan teks atau gambar harus ada.",
+    }
+  );
+
 const ChatRequestSchema = z.object({
+  assistantId: z.enum(["portfolio", "general"]).optional().default("portfolio"),
   messages: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().min(1).max(chatbotConfig.maxMessageLength),
-      })
-    )
+    .array(ChatMessageItemSchema)
     .min(1)
     .max(chatbotConfig.maxMessageHistory),
 });
@@ -85,13 +98,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages } = parsed.data;
+  const { messages, assistantId } = parsed.data;
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
-  const userQuery = lastUserMsg ? lastUserMsg.content : "";
+  const userQuery =
+    lastUserMsg?.content.trim() ||
+    (lastUserMsg?.images && lastUserMsg.images.length > 0
+      ? "Analisis gambar ini"
+      : "");
 
-  // 3. Build System Prompt with RAG
-  const rules = await getRulesText();
-  const systemPrompt = buildSystemPrompt(userQuery, rules);
+  // 3. Resolve Assistant Profile & System Prompt
+  const profile =
+    ASSISTANT_PROFILES.find((p) => p.id === assistantId) ||
+    ASSISTANT_PROFILES[0];
+
+  let systemPrompt: string;
+  if (profile.useRAG) {
+    const rules = await getRulesText();
+    systemPrompt = buildSystemPrompt(userQuery, rules);
+  } else {
+    systemPrompt = profile.systemPrompt;
+  }
+
+  const maxTokens = Math.min(profile.maxTokens, chatbotConfig.maxTokens);
 
   const baseUrl = process.env.CHAT_API_BASE_URL;
   const apiKey = process.env.CHAT_API_KEY;
@@ -101,7 +129,10 @@ export async function POST(req: NextRequest) {
   // Fallback demo mode if environment variables are not configured
   if (!baseUrl || !apiKey) {
     // Return graceful synthetic assistant response in demo mode
-    const demoReply = `Halo! Saya adalah asisten AI Satria Ramadhan (Demo Mode). Kunci API belum dikonfigurasi di environment, namun knowledge base RAG lokal berhasil menemukan informasi berikut:\n\n${systemPrompt.slice(0, 300)}...`;
+    const hasImage = !!(lastUserMsg?.images && lastUserMsg.images.length > 0);
+    const demoReply = hasImage
+      ? `Halo! Saya menerima pesan Anda beserta ${lastUserMsg!.images!.length} gambar (Demo Mode). Kunci API belum dikonfigurasi di environment, namun endpoint berhasil menerima berkas gambar.`
+      : `Halo! Saya adalah asisten AI Satria Ramadhan (Demo Mode). Kunci API belum dikonfigurasi di environment, namun knowledge base RAG lokal berhasil menemukan informasi berikut:\n\n${systemPrompt.slice(0, 300)}...`;
 
     if (isStream) {
       const encoder = new TextEncoder();
@@ -109,6 +140,13 @@ export async function POST(req: NextRequest) {
         start(controller) {
           const sseData = `data: ${JSON.stringify({
             choices: [{ delta: { content: demoReply } }],
+          })}\n\ndata: ${JSON.stringify({
+            choices: [],
+            usage: {
+              prompt_tokens: 38,
+              completion_tokens: 42,
+              total_tokens: 80,
+            },
           })}\n\ndata: [DONE]\n\n`;
           controller.enqueue(encoder.encode(sseData));
           controller.close();
@@ -126,6 +164,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       choices: [{ message: { role: "assistant", content: demoReply } }],
+      usage: {
+        prompt_tokens: 38,
+        completion_tokens: 42,
+        total_tokens: 80,
+      },
     });
   }
 
@@ -134,7 +177,30 @@ export async function POST(req: NextRequest) {
   const timeoutId = setTimeout(() => controller.abort(), 20000);
 
   try {
-    const upstreamUrl = `${baseUrl.replace(/\/+$/, "")}/v1/chat/completions`;
+    const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
+    const upstreamUrl = cleanBaseUrl.endsWith("/v1")
+      ? `${cleanBaseUrl}/chat/completions`
+      : `${cleanBaseUrl}/v1/chat/completions`;
+    const upstreamMessages = messages.map((m) => {
+      if (m.role === "user" && m.images && m.images.length > 0) {
+        const textPart = m.content.trim() || "Jelaskan gambar ini.";
+        return {
+          role: "user",
+          content: [
+            { type: "text", text: textPart },
+            ...m.images.map((img) => ({
+              type: "image_url",
+              image_url: { url: img },
+            })),
+          ],
+        };
+      }
+      return {
+        role: m.role,
+        content: m.content || " ",
+      };
+    });
+
     const upstreamRes = await fetch(upstreamUrl, {
       method: "POST",
       headers: {
@@ -143,10 +209,14 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         model,
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...upstreamMessages,
+        ],
         temperature: chatbotConfig.temperature,
-        max_tokens: chatbotConfig.maxTokens,
+        max_tokens: maxTokens,
         stream: isStream,
+        ...(isStream ? { stream_options: { include_usage: true } } : {}),
       }),
       signal: controller.signal,
     });
@@ -194,7 +264,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: "Terjadi kesalahan internal saat menghubungkan ke chatbot." },
+      {
+        error: "Terjadi kesalahan internal saat menghubungkan ke chatbot.",
+        details: err instanceof Error ? err.message : String(err),
+      },
       { status: 500 }
     );
   }

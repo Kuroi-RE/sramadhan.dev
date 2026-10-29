@@ -227,8 +227,8 @@ Pemetaan lengkap token dari `design.md` yang diintegrasikan dengan alias `--linu
 - **Canvas & Overlay**: Latar dasar `--page-bg` (`#040D3F`). Jika wallpaper aktif, lapisi dengan overlay `rgba(4, 13, 63, 0.72)` agar kontras surface tetap terjaga.
 - **Waybar Top Bar (`design.md` Header Bar Anatomy + Hyprland Modules)**:
   - Tinggi `40px` (proporsional untuk window manager desktop), latar `--surface-default` (`#141C4E`), padding horizontal `24px` (`--space-2xl`), shadow `--shadow-tile`, tanpa garis border kasar.
-  - **Kiri**: Wordmark `> sramadhan` (`Plus Jakarta Sans` 14px bold `#FFFFFF`) + grup tombol Workspace `1 2 3 4 5` di dalam container `--page-bg` (`radius: 8px`). Tombol workspace aktif memakai `--card-bg` (`#1D2552`) dengan indikator bawah `--accent`; tidak aktif memakai teks `--text-secondary` (`#B9BBC7`).
-  - **Tengah**: Modul sesi aktif dalam tile `--card-bg` (`radius: 8px`, padding `4px 12px`). Format teks bebas em-dash (R-02): `${t(activeAppMeta.titleKey)} // sramadhan@wayland`.
+  - **Kiri**: Wordmark `> sramadhan` (`Plus Jakarta Sans` 14px bold `#FFFFFF`) + grup tombol Workspace `1 2 3 4 5` di dalam container `--page-bg` (`radius: 8px`). Tombol workspace aktif memakai `--card-bg` (`#1D2552`) dengan indikator bawah `--accent`; tidak aktif memakai teks `--text-secondary` (`#B9BBC7`). Di samping workspace, modul informasi sesi/aplikasi aktif (`Terminal` icon + `${t(activeAppMeta.titleKey)} // sramadhan@wayland`) ditempatkan di sisi kiri agar tidak bertabrakan dengan Notch PioPio di area tengah.
+  - **Tengah**: Dikosongkan khusus untuk widget status sistem Notch PioPio (`IslandView`), sehingga widget tidak lagi menutupi informasi bar mana pun.
   - **Kanan**:
     - Chip metrik CPU & RAM (`JetBrains Mono` 12px `tabular-nums`, ikon CPU berwarna `--positive` `#7FE089`).
     - Chip Baterai (jika didukung, warna `--positive`).

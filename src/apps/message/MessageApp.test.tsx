@@ -99,4 +99,154 @@ describe("MessageApp Component RTL Tests", () => {
       expect(screen.getByText("Jawaban setelah retry.")).toBeInTheDocument();
     });
   });
+
+  it("displays token usage badge and header token summary when response contains usage", async () => {
+    global.fetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                role: "assistant",
+                content: "Ini respon dengan metrik token.",
+              },
+            },
+          ],
+          usage: {
+            prompt_tokens: 120,
+            completion_tokens: 45,
+            total_tokens: 165,
+            tokens_per_second: 22.4,
+          },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      )
+    );
+
+    render(<MessageApp />);
+
+    const input = screen.getByTestId("chat-input");
+    const sendBtn = screen.getByTestId("chat-send-btn");
+
+    await act(async () => {
+      fireEvent.change(input, { target: { value: "Halo test token" } });
+      fireEvent.click(sendBtn);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Ini respon dengan metrik token.")
+      ).toBeInTheDocument();
+    });
+
+    // Check token usage badge in the assistant bubble
+    const badge = screen.getByTestId("token-usage-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge.textContent).toContain("165 tokens");
+    expect(badge.textContent).toContain("120 in");
+    expect(badge.textContent).toContain("45 out");
+    expect(badge.textContent).toContain("22.4 tok/s");
+
+    // Check header token summary badge
+    const headerBadge = screen.getByTestId("header-token-badge");
+    expect(headerBadge).toBeInTheDocument();
+    expect(headerBadge.textContent).toContain("165 tok");
+  });
+
+  it("handles image upload, paste, drag-and-drop, and displays attached images in message bubble", async () => {
+    let sentBody: string = "";
+    global.fetch = vi.fn().mockImplementation((_url, init) => {
+      sentBody = init?.body as string;
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  role: "assistant",
+                  content: "Gambar berhasil dianalisis.",
+                },
+              },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+      );
+    });
+
+    render(<MessageApp />);
+
+    // 1. Upload via file input
+    const fileInput = screen.getByTestId("chat-file-input");
+    const mockFile1 = new File(["dummy png content"], "test1.png", {
+      type: "image/png",
+    });
+
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [mockFile1] } });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("chat-pending-images")).toBeInTheDocument();
+    });
+
+    // 2. Paste image
+    const chatInput = screen.getByTestId("chat-input");
+    const mockFile2 = new File(["dummy paste content"], "paste.png", {
+      type: "image/png",
+    });
+    await act(async () => {
+      fireEvent.paste(chatInput, {
+        clipboardData: {
+          items: [
+            {
+              type: "image/png",
+              getAsFile: () => mockFile2,
+            },
+          ],
+        },
+      });
+    });
+
+    await waitFor(() => {
+      const thumbs = screen.getAllByTestId("pending-image-thumb");
+      expect(thumbs.length).toBe(2);
+    });
+
+    // 3. Remove one image
+    const removeBtn = screen.getByTestId("remove-image-0");
+    await act(async () => {
+      fireEvent.click(removeBtn);
+    });
+
+    expect(screen.getAllByTestId("pending-image-thumb").length).toBe(1);
+
+    // 4. Send message with image and text
+    const sendBtn = screen.getByTestId("chat-send-btn");
+    await act(async () => {
+      fireEvent.change(chatInput, {
+        target: { value: "Tolong deskripsikan gambar ini" },
+      });
+      fireEvent.click(sendBtn);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Gambar berhasil dianalisis.")
+      ).toBeInTheDocument();
+    });
+
+    // Verify user bubble contains image preview
+    expect(screen.getByTestId("chat-message-images")).toBeInTheDocument();
+    expect(
+      screen.getByText("Tolong deskripsikan gambar ini")
+    ).toBeInTheDocument();
+
+    // Verify payload sent to /api/chat contains image data
+    const parsed = JSON.parse(sentBody);
+    const lastMsg = parsed.messages[parsed.messages.length - 1];
+    expect(lastMsg.images).toBeDefined();
+    expect(lastMsg.images.length).toBe(1);
+    expect(lastMsg.images[0]).toContain("data:image/png");
+  });
 });
